@@ -1,0 +1,14 @@
+@import 'src/scss/variables';
+
+.root {
+  border: 1px solid $gray-line;
+  padding: 13px 25px;
+  border-radius: 30px;
+  width: 300px;
+  font-size: 16px;
+  line-height: 23px;
+
+  &:focus {
+    border: 1px solid #b3b3b3;
+  }
+}
