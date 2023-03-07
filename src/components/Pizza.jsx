@@ -1,16 +1,43 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addItem } from '../store/slices/cartSlice';
+import JSConfetti from 'js-confetti';
+
+const jsConfetti = new JSConfetti();
 
 export default function Pizza({
+  id,
   title,
-  price,
+  prices,
   imageUrl,
   types,
   sizes,
   categories,
   rating,
 }) {
+  const dispatch = useDispatch();
+  const cartItem = useSelector((state) =>
+    state.cart.items.find((item) => item.id === id)
+  );
+  const addedCount = cartItem ? cartItem.count : 0;
+
   const [typeId, setTypeId] = React.useState(0);
   const [sizeId, setSizeId] = React.useState(0);
+
+  const onClickAdd = () => {
+    const item = {
+      id,
+      title,
+      price: prices[sizeId],
+      imageUrl,
+      typeId,
+      sizeId,
+    };
+    jsConfetti.addConfetti({
+      emojis: ['🥳', '🥰', '🤗'],
+    });
+    dispatch(addItem(item));
+  };
 
   return (
     <div className="pizza-block-wrapper">
@@ -48,10 +75,10 @@ export default function Pizza({
           </ul>
         </div>
         <div className="pizza-block__bottom">
-          <div className="pizza-block__price">от {price} ₽</div>
+          <div className="pizza-block__price">от {prices[sizeId]} ₽</div>
           <button
             className="button button--outline button--add"
-            onClick={() => alert('ИДИ НАХУЙ АХАХАХА')}
+            onClick={onClickAdd}
           >
             <svg
               width="12"
@@ -66,7 +93,6 @@ export default function Pizza({
               />
             </svg>
             <span>Добавить</span>
-            <i>0</i>
           </button>
         </div>
       </div>
