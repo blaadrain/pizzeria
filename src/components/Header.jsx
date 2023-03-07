@@ -13,7 +13,7 @@ export default function Header() {
               alt="Pizza logo"
             />
             <div>
-              <h1>React Pizza</h1>
+              <h1>Rare Pizza</h1>
               <p>Cамая вкусная пицца во вселенной</p>
             </div>
           </div>

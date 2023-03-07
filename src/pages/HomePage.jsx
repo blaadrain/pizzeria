@@ -1,18 +1,24 @@
 import React from 'react';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import Pizza from '../components/Pizza';
 import PizzaSkeleton from '../components/UI/PizzaSkeleton';
+import { changeCategoryId } from '../store/slices/filterSlice';
 
 const Home = ({ searchValue }) => {
+  const dispatch = useDispatch();
+
   const [items, setItems] = React.useState([]);
   const [isItemsLoading, setIsItemsLoading] = React.useState(true);
-  const [categoryId, setCategoryId] = React.useState(0);
-  const [sortBy, setSortBy] = React.useState({
-    name: 'rating',
-    value: 'популярности',
-  });
+
+  const { categoryId, sortBy } = useSelector((state) => state.filters);
+
+  const onChangeCategory = (id) => {
+    dispatch(changeCategoryId(id));
+  };
 
   React.useEffect(() => {
     setIsItemsLoading(true);
@@ -23,9 +29,13 @@ const Home = ({ searchValue }) => {
     }`;
     const params = `?${categoryParam}&${sortParam}`;
 
-    fetch(`https://6403a6883bdc59fa8f2a61db.mockapi.io/pizzeria_items${params}`)
-      .then((res) => res.json())
-      .then((data) => setItems(data))
+    axios
+      .get(
+        `https://6403a6883bdc59fa8f2a61db.mockapi.io/pizzeria_items${params}`
+      )
+      .then((res) => {
+        setItems(res.data);
+      })
       .catch((err) => console.warn(err))
       .finally(() => setIsItemsLoading(false));
 
@@ -51,12 +61,9 @@ const Home = ({ searchValue }) => {
       <div className="content__top">
         <Categories
           id={categoryId}
-          onChangeCategory={setCategoryId}
+          onChangeCategory={onChangeCategory}
         />
-        <Sort
-          sortObj={sortBy}
-          onChangeSort={setSortBy}
-        />
+        <Sort />
       </div>
       <h1 className="content__title">Все пиццы</h1>
       <div className="content__items">

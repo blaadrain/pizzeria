@@ -1,6 +1,11 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeSortBy } from '../store/slices/filterSlice';
 
-export default function Sort({ sortObj, onChangeSort }) {
+export default function Sort() {
+  const dispatch = useDispatch();
+  const sortObj = useSelector((state) => state.filters.sortBy);
+
   const sortBy = [
     { name: 'rating', value: 'популярности' },
     { name: 'price', value: 'цене' },
@@ -9,7 +14,7 @@ export default function Sort({ sortObj, onChangeSort }) {
   const [isPopupActive, setIsPopupActive] = React.useState(false);
 
   function changeCurrentSortBy(sort) {
-    onChangeSort(sort);
+    dispatch(changeSortBy(sort));
     setIsPopupActive(false);
   }
 
