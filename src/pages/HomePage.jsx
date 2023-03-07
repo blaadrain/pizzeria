@@ -66,11 +66,11 @@ const Home = ({ searchValue }) => {
         <Sort />
       </div>
       <h1 className="content__title">Все пиццы</h1>
-      <h2 className="content__description">
+      {/* <h2 className="content__description">
         Внимание - акция! Только сегодня, <b>каждая</b> пицца идет за полцены!
         Добавьте любую понравишуюся пиццу в корзину, где она автоматически
         получит 50% скидку.
-      </h2>
+      </h2> */}
       <div className="content__items">
         {isItemsLoading ? skeletons : pizzas}
         {!pizzas.length && <h3>Ничего не найдено :(</h3>}

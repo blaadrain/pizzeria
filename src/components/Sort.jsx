@@ -25,7 +25,20 @@ export default function Sort() {
     setIsPopupActive((prevIsPopupActive) => !prevIsPopupActive);
   }
 
-  console.log(sortRef);
+  React.useEffect(() => {
+    const handleClickOutside = (view) => {
+      if (!view.composedPath().includes(sortRef.current)) {
+        setIsPopupActive(false);
+      }
+    };
+
+    document.body.addEventListener('click', handleClickOutside);
+
+    // Эта функция отрабатывает только в случае анмаунта
+    return () => {
+      document.body.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
