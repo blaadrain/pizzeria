@@ -49,7 +49,10 @@ export default function Pizza({
         </div>
         <div className="pizza-block__bottom">
           <div className="pizza-block__price">от {price} ₽</div>
-          <button className="button button--outline button--add">
+          <button
+            className="button button--outline button--add"
+            onClick={() => alert('ИДИ НАХУЙ АХАХАХА')}
+          >
             <svg
               width="12"
               height="12"

@@ -2,16 +2,19 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeSortBy } from '../store/slices/filterSlice';
 
+// rename to sortingTypes / sortingType
+const sortBy = [
+  { name: 'rating', value: 'популярности' },
+  { name: 'price', value: 'цене' },
+  { name: 'title', value: 'алфавиту' },
+];
+
 export default function Sort() {
   const dispatch = useDispatch();
   const sortObj = useSelector((state) => state.filters.sortBy);
-
-  const sortBy = [
-    { name: 'rating', value: 'популярности' },
-    { name: 'price', value: 'цене' },
-    { name: 'title', value: 'алфавиту' },
-  ];
   const [isPopupActive, setIsPopupActive] = React.useState(false);
+
+  const sortRef = React.useRef();
 
   function changeCurrentSortBy(sort) {
     dispatch(changeSortBy(sort));
@@ -22,8 +25,13 @@ export default function Sort() {
     setIsPopupActive((prevIsPopupActive) => !prevIsPopupActive);
   }
 
+  console.log(sortRef);
+
   return (
-    <div className="sort">
+    <div
+      ref={sortRef}
+      className="sort"
+    >
       <div className="sort__label">
         <svg
           className={`sort__svg${isPopupActive ? '--flipped' : ''}`}

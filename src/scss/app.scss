@@ -38,6 +38,15 @@
     margin: 35px 0;
   }
 
+  &__description {
+    font-size: 20px;
+    margin: 0 0 70px 0;
+    color: white;
+    background-color: $orange;
+    padding: 25px;
+    border-radius: 50px;
+  }
+
   &__items {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
