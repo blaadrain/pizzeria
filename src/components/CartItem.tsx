@@ -2,30 +2,58 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
   addItem,
-  clear,
+  CartItemType,
   deleteItem,
   removeItem,
 } from '../store/slices/cartSlice';
 
-const CartItem = ({ id, title, price, imageUrl, typeId, sizeId, count }) => {
-  const sizes = {
-    0: 'маленькая',
-    1: 'средняя',
-    2: 'большая',
-  };
+type CartItemProps = {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  typeId: number;
+  sizeId: number;
+  count: number;
+};
 
+const sizes = {
+  0: 'маленькая',
+  1: 'средняя',
+  2: 'большая',
+};
+
+const CartItem: React.FC<CartItemProps> = ({
+  id,
+  title,
+  price,
+  imageUrl,
+  typeId,
+  sizeId,
+  count,
+}) => {
   const dispatch = useDispatch();
 
+  const item: CartItemType = {
+    id,
+    title,
+    price,
+    imageUrl,
+    typeId,
+    sizeId,
+    count,
+  };
+
   const onClickPlus = () => {
-    dispatch(addItem({ id, typeId, sizeId }));
+    dispatch(addItem(item));
   };
 
   const onClickMinus = () => {
-    dispatch(removeItem({ id, typeId, sizeId }));
+    dispatch(removeItem(item));
   };
 
   const onClickRemove = () => {
-    dispatch(deleteItem({ id, typeId, sizeId }));
+    dispatch(deleteItem(item));
   };
 
   return (
@@ -40,7 +68,8 @@ const CartItem = ({ id, title, price, imageUrl, typeId, sizeId, count }) => {
       <div className="cart__item-info">
         <h3>{title}</h3>
         <p>
-          {typeId === 0 ? 'Тонкое' : 'Традиционное'} тесто, {sizes[sizeId]}.
+          {typeId === 0 ? 'Тонкое' : 'Традиционное'} тесто,{' '}
+          {sizes[sizeId as keyof object]}.
         </p>
       </div>
       <div className="cart__item-count">

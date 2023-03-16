@@ -1,59 +1,59 @@
 import React from 'react';
-import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
 
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import Pizza from '../components/Pizza';
 import PizzaSkeleton from '../components/UI/PizzaSkeleton';
-import { changeCategoryId } from '../store/slices/filterSlice';
 
-const Home = ({ searchValue }) => {
+import { useDispatch, useSelector } from 'react-redux';
+import { changeCategoryId, selectFilters } from '../store/slices/filterSlice';
+import { fetchItems, selectPizzas } from '../store/slices/pizzasSlice';
+
+const HomePage: React.FC = () => {
   const dispatch = useDispatch();
 
-  const [items, setItems] = React.useState([]);
-  const [isItemsLoading, setIsItemsLoading] = React.useState(true);
+  const { categoryId, sortBy, searchValue } = useSelector(selectFilters);
+  const { items, status } = useSelector(selectPizzas);
 
-  const { categoryId, sortBy } = useSelector((state) => state.filters);
-
-  const onChangeCategory = (id) => {
+  const onChangeCategory = (id: number) => {
     dispatch(changeCategoryId(id));
   };
 
   React.useEffect(() => {
-    setIsItemsLoading(true);
+    async function fetchPizzas() {
+      const categoryParam = categoryId ? `categories=${categoryId}` : '';
+      const sortParam = `sortBy=${
+        sortBy.name === 'rating' ? sortBy.name + '&order=desc' : sortBy.name
+      }`;
+      const params = `?${categoryParam}&${sortParam}`;
 
-    const categoryParam = categoryId ? `categories=${categoryId}` : '';
-    const sortParam = `sortBy=${
-      sortBy.name === 'rating' ? sortBy.name + '&order=desc' : sortBy.name
-    }`;
-    const params = `?${categoryParam}&${sortParam}`;
+      // @ts-ignore
+      dispatch(fetchItems(params));
 
-    axios
-      .get(
-        `https://6403a6883bdc59fa8f2a61db.mockapi.io/pizzeria_items${params}`
-      )
-      .then((res) => {
-        setItems(res.data);
-      })
-      .catch((err) => console.warn(err))
-      .finally(() => setIsItemsLoading(false));
+      window.scrollTo(0, 0);
+    }
 
-    window.scrollTo(0, 0);
+    fetchPizzas();
   }, [categoryId, sortBy]);
 
   const pizzas = items
-    .filter((pizza) =>
+    .filter((pizza: any) =>
       pizza.title.toLowerCase().includes(searchValue.toLowerCase())
     )
-    .map((pizza) => (
+    .map((pizza: any) => (
       <Pizza
         key={pizza.id}
         {...pizza}
       />
     ));
+
   const skeletons = [...new Array(6)].map((_, i) => {
-    return <PizzaSkeleton key={i} />;
+    return (
+      <PizzaSkeleton
+        key={i}
+        styles={{ width: '100%' }}
+      />
+    );
   });
 
   return (
@@ -72,11 +72,11 @@ const Home = ({ searchValue }) => {
         получит 50% скидку.
       </h2> */}
       <div className="content__items">
-        {isItemsLoading ? skeletons : pizzas}
+        {status === 'loading' ? skeletons : pizzas}
         {!pizzas.length && <h3>Ничего не найдено :(</h3>}
       </div>
     </div>
   );
 };
 
-export default Home;
+export default HomePage;

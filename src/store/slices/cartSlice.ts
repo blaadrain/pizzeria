@@ -1,6 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
-const initialState = {
+export type CartItemType = {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  typeId: number;
+  sizeId: number;
+  count: number;
+};
+
+interface CartSliceState {
+  totalPrice: number;
+  totalItems: number;
+  items: CartItemType[];
+}
+
+const initialState: CartSliceState = {
   totalPrice: 0,
   totalItems: 0,
   items: [],
@@ -18,7 +35,7 @@ const cartSlice = createSlice({
     //     return sum + item.price;
     //   }, 0);
     // },
-    addItem(state, action) {
+    addItem(state, action: PayloadAction<CartItemType>) {
       const findItem = state.items.find(
         (item) =>
           item.id === action.payload.id &&
@@ -37,7 +54,7 @@ const cartSlice = createSlice({
         return sum + item.price * item.count;
       }, 0);
     },
-    removeItem(state, action) {
+    removeItem(state, action: PayloadAction<CartItemType>) {
       const findItem = state.items.find(
         (item) =>
           item.id === action.payload.id &&
@@ -45,7 +62,7 @@ const cartSlice = createSlice({
           item.sizeId === action.payload.sizeId
       );
 
-      if (findItem)
+      if (findItem) {
         findItem.count > 1
           ? findItem.count--
           : (state.items = state.items.filter(
@@ -57,10 +74,11 @@ const cartSlice = createSlice({
                 )
             ));
 
-      state.totalItems -= 1;
-      state.totalPrice -= findItem.price;
+        state.totalItems -= 1;
+        state.totalPrice -= findItem.price;
+      }
     },
-    deleteItem(state, action) {
+    deleteItem(state, action: PayloadAction<CartItemType>) {
       const findItem = state.items.find(
         (item) =>
           item.id === action.payload.id &&
@@ -77,8 +95,10 @@ const cartSlice = createSlice({
           )
       );
 
-      state.totalItems -= findItem.count;
-      state.totalPrice -= findItem.price * findItem.count;
+      if (findItem) {
+        state.totalItems -= findItem.count;
+        state.totalPrice -= findItem.price * findItem.count;
+      }
     },
     clear(state) {
       state.items = [];
@@ -87,6 +107,11 @@ const cartSlice = createSlice({
     },
   },
 });
+
+export const selectCart = (state: RootState) => state.cart;
+// Пример реализации сложного селектора из Pizza.jsx
+// export const selectCartItemById = (id) => (state) =>
+//   state.cart.items.find((item) => item.id === id);
 
 export const { addItem, removeItem, deleteItem, clear } = cartSlice.actions;
 

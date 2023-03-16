@@ -1,22 +1,25 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeSortBy } from '../store/slices/filterSlice';
+import {
+  changeSortBy,
+  selectSortBy,
+  SortByItem,
+} from '../store/slices/filterSlice';
 
-// rename to sortingTypes / sortingType
-const sortBy = [
+const sortBy: SortByItem[] = [
   { name: 'rating', value: 'популярности' },
   { name: 'price', value: 'цене' },
   { name: 'title', value: 'алфавиту' },
 ];
 
-export default function Sort() {
+const Sort: React.FC = () => {
   const dispatch = useDispatch();
-  const sortObj = useSelector((state) => state.filters.sortBy);
+  const sortObj: SortByItem = useSelector(selectSortBy);
   const [isPopupActive, setIsPopupActive] = React.useState(false);
 
-  const sortRef = React.useRef();
+  const sortRef = React.useRef<HTMLDivElement>(null);
 
-  function changeCurrentSortBy(sort) {
+  function changeCurrentSortBy(sort: SortByItem) {
     dispatch(changeSortBy(sort));
     setIsPopupActive(false);
   }
@@ -26,8 +29,8 @@ export default function Sort() {
   }
 
   React.useEffect(() => {
-    const handleClickOutside = (view) => {
-      if (!view.composedPath().includes(sortRef.current)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
         setIsPopupActive(false);
       }
     };
@@ -79,4 +82,6 @@ export default function Sort() {
       </div>
     </div>
   );
-}
+};
+
+export default Sort;

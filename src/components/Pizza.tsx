@@ -1,37 +1,47 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { addItem } from '../store/slices/cartSlice';
+import { useDispatch } from 'react-redux';
+import { addItem, CartItemType } from '../store/slices/cartSlice';
 import JSConfetti from 'js-confetti';
+import { Link } from 'react-router-dom';
 
 const jsConfetti = new JSConfetti();
 
-export default function Pizza({
+type PizzaProps = {
+  id: string;
+  title: string;
+  prices: number[];
+  imageUrl: string;
+  types: number[];
+  sizes: string[];
+  categories: number[];
+  rating: number;
+};
+
+const Pizza: React.FC<PizzaProps> = ({
   id,
   title,
   prices,
   imageUrl,
   types,
   sizes,
-  categories,
-  rating,
-}) {
+}) => {
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) =>
-    state.cart.items.find((item) => item.id === id)
-  );
-  const addedCount = cartItem ? cartItem.count : 0;
+  // Пример реализации сложного селектора
+  // const cartItem = useSelector(selectCartItemById(id));
+  // const addedCount = cartItem ? cartItem.count : 0;
 
-  const [typeId, setTypeId] = React.useState(0);
-  const [sizeId, setSizeId] = React.useState(0);
+  const [typeId, setTypeId] = React.useState<number>(0);
+  const [sizeId, setSizeId] = React.useState<number>(0);
 
   const onClickAdd = () => {
-    const item = {
+    const item: CartItemType = {
       id,
       title,
       price: prices[sizeId],
       imageUrl,
       typeId,
       sizeId,
+      count: 0,
     };
     jsConfetti.addConfetti({
       emojis: ['🥳', '🥰', '🤗'],
@@ -42,11 +52,13 @@ export default function Pizza({
   return (
     <div className="pizza-block-wrapper">
       <div className="pizza-block">
-        <img
-          className="pizza-block__image"
-          src={imageUrl}
-          alt="Pizza"
-        />
+        <Link to={`/pizza/${id}`}>
+          <img
+            className="pizza-block__image"
+            src={imageUrl}
+            alt="Pizza"
+          />
+        </Link>
         <div className="pizza-block__title">
           <h4>{title}</h4>
         </div>
@@ -98,4 +110,6 @@ export default function Pizza({
       </div>
     </div>
   );
-}
+};
+
+export default Pizza;

@@ -2,11 +2,11 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CartItem from '../components/CartItem';
-import { clear } from '../store/slices/cartSlice';
+import { clear, selectCart } from '../store/slices/cartSlice';
 
-const CartPage = () => {
+const CartPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { totalPrice, totalItems, items } = useSelector((state) => state.cart);
+  const { totalPrice, totalItems, items } = useSelector(selectCart);
 
   return (
     <div className="container container--cart">
@@ -89,7 +89,7 @@ const CartPage = () => {
         </div>
         <div className="cart__items">
           {items.length > 0 ? (
-            items.map((item) => (
+            items.map((item: any) => (
               <CartItem
                 key={`${item.id}-${item.typeId}-${item.sizeId}`}
                 {...item}
