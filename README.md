@@ -1,1 +1,1 @@
-# Pizzeria web-app I guess
+# React + TypeScript + Redux ToolKit + React Router + Axios
